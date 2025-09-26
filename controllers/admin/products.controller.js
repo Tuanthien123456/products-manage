@@ -130,9 +130,9 @@ module.exports.createPost = async(req,res)=>{
         req.body.position=parseInt(req.body.position);
     }
 
-    if(req.file){
-        req.body.thumbnail=`/uploads/${req.file.filename}`;
-    }
+    // if(req.file){
+    //     req.body.thumbnail=`/uploads/${req.file.filename}`;
+    // }
     const product= new Product(req.body);
     await product.save();
 
@@ -183,7 +183,6 @@ module.exports.editPatch = async(req,res)=>{
     //console.log(req.body);
     res.redirect("/admin/products");
 }
-
 
 //[Get]/admin/products/detail/:id
 module.exports.detail = async(req,res)=>{
