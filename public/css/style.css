@@ -1,0 +1,123 @@
+.header {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+.header .inner-logo img {
+  max-height: 50px;
+  max-width: 100%;
+}
+
+.header .inner-menu > ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.header .inner-menu > ul > li {
+  margin-left: 20px;
+}
+
+/* End Header */
+
+/* Footer */
+.footer{
+    background: black;
+    color: white;
+    text-align: center;
+    padding:10px;
+}
+
+/*box-head */
+/* Container chung */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Box đầu trang */
+.box-head {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.box-head .inner-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Sản phẩm */
+.product-item {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.product-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+/* Ảnh sản phẩm */
+.product-item .inner-image {
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9f9f9;
+}
+
+.product-item .inner-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.product-item:hover .inner-image img {
+  transform: scale(1.05);
+}
+
+/* Nội dung */
+.product-item .inner-content {
+  padding: 15px;
+  text-align: center;
+}
+
+.product-item .inner-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+/* Giá */
+.product-item .inner-price-new {
+  font-size: 20px;
+  font-weight: bold;
+  color: #e63946;
+}
+
+.product-item .inner-price-old {
+  font-size: 16px;
+  color: #999;
+  text-decoration: line-through;
+  margin-left: 10px;
+}
+
+.product-item .inner-discount {
+  font-size: 14px;
+  font-weight: bold;
+  color: #2a9d8f;
+  margin-top: 5px;
+}
