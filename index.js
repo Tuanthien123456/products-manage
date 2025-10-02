@@ -1,6 +1,7 @@
 const express=require("express");
 const app=express();
 
+const path = require("path");
 const cookieParser=require("cookie-parser");
 const session=require("express-session");
 
@@ -23,7 +24,9 @@ const systemConfig=require("./config/sytem.js");
 require("dotenv").config();
 const port=process.env.PORT;
 
-
+//tinymce
+app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
+//end tinymce
 
 //nhung bodyparser
 const bodyParser=require('body-parser');

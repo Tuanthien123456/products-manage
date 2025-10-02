@@ -35,11 +35,21 @@ module.exports.index= async (req,res)=>{
     req.query,
     countProduct
 );
-    
-
     //End Phân Trang
 
-    const products=await Product.find(find).limit(objectPagination.limitPage).skip(objectPagination.skip).sort({position: "desc"});
+
+    //Sort
+
+    let sort={}
+
+    if(req.query.sortKey && req.query.sortValue){
+        sort[req.query.sortKey]=req.query.sortValue;
+    }else{
+        sort.position="desc";
+    }
+    //EndSort
+
+    const products=await Product.find(find).limit(objectPagination.limitPage).skip(objectPagination.skip).sort(sort);
 
     res.render("admin/pages/products/index",{
         title:"Trang Danh Sách Sản Phẩm",
@@ -125,7 +135,7 @@ module.exports.createPost = async(req,res)=>{
 
     if(req.body.position ==""){
         const countProduct=await Product.countDocuments();
-        req.body.position=countProduct;
+        req.body.position=countProduct +1;
     }else{
         req.body.position=parseInt(req.body.position);
     }
