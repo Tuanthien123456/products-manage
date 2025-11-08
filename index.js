@@ -4,7 +4,8 @@ const app=express();
 const path = require("path");
 const cookieParser=require("cookie-parser");
 const session=require("express-session");
-
+//moment
+const moment=require('moment');
 
 
 // flash
@@ -50,6 +51,7 @@ AdminRoutes(app);
 
 // App Locals Variables (biến sử dụng được trong tất cả trong file pug)
 app.locals.prefixAdmin=systemConfig.prefixAdmin;
+app.locals.moment=moment;
 
 
 

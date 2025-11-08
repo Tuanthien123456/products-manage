@@ -1,4 +1,4 @@
 tinymce.init({
-  selector: "textarea",
+  selector: "textarea.mc",
   plugins:"image",
 });

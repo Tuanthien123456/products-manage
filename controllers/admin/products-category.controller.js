@@ -1,26 +1,14 @@
 const ProductCategory=require("../../models/models.products-category");
 
+const createTreeHelpers=require("../../helpers/createTree");
+
 module.exports.index = async(req,res)=>{
     let find={
         deleted:false,
     }
-    function createTree(arr,parentId=""){
-        const tree=[];
-        arr.forEach((item) => {
-            if(item.parent_id === parentId){
-                const newItem =item;
-                const children =createTree(arr,item.id);
-                if(children.length>0){
-                    newItem.children = children;
-                }
-                tree.push(newItem);
-            }
-        });
-        return tree;
-    }
 
     const records= await ProductCategory.find(find);
-    const newRecords=createTree(records);
+    const newRecords=createTreeHelpers.tree(records);
     res.render("admin/pages/products-category/index",{
         pageTitle:"Danh mục sản phẩm",
         record:newRecords
@@ -32,23 +20,9 @@ module.exports.create = async (req,res)=>{
         deleted:false,
     }
 
-    function createTree(arr,parentId=""){
-        const tree=[];
-        arr.forEach((item) => {
-            if(item.parent_id === parentId){
-                const newItem =item;
-                const children =createTree(arr,item.id);
-                if(children.length>0){
-                    newItem.children = children;
-                }
-                tree.push(newItem);
-            }
-        });
-        return tree;
-    }
 
     const records=await ProductCategory.find(find);
-    const newRecords=createTree(records);
+    const newRecords=createTreeHelpers.tree(records);
     console.log(newRecords);
 
     //console.log(records);
@@ -69,4 +43,39 @@ module.exports.createPost = async(req,res)=>{
     await record.save();
 
     res.redirect("/admin/products-category");
+}
+
+module.exports.edit = async(req,res)=>{
+    try {
+        const id=req.params.id;
+    //console.log(id);
+
+    const data=await ProductCategory.findOne({
+        _id:id,
+        deleted:false
+    });
+    //console.log(data);
+    const record=await ProductCategory.find({
+        deleted:false
+    });
+
+    const newRecords=createTreeHelpers.tree(record);
+
+    res.render("admin/pages/products-category/edit",{
+        pageTitle:"Chỉnh Sửa Danh mục sản phẩm",
+        data:data,
+        record:newRecords
+    });
+    } catch (error) {
+        res.redirect("/admin/products-category");
+    }
+}
+
+module.exports.editPatch = async(req,res)=>{
+    const id=req.params.id;
+    console.log(req.body);  
+    req.body.position=parseInt(req.body.position);
+
+    await ProductCategory.updateOne({_id:id},req.body);
+     res.redirect("/admin/products-category");
 }
