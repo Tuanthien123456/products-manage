@@ -18,5 +18,5 @@ module.exports=(app)=>{
 
     app.use(PATH_ADMIN+"/accounts",authMiddlewares.requireAuth,accountsRouter);
     app.use(PATH_ADMIN+"/auth",authsRouter);
-     app.use(PATH_ADMIN+"/my-account",authMiddlewares.requireAuth,myAccountRouter);
+    app.use(PATH_ADMIN+"/my-account",authMiddlewares.requireAuth,myAccountRouter);
 }

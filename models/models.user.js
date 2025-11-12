@@ -13,12 +13,6 @@ const UserSchema= new mongoose.Schema(
             type:String,
             default:generate.generateRandomString(20)
         },
-        phone:String,
-        avatar:String,
-        status:{
-            type:String,
-            default:"active"
-        },
         deleted:{
             type:Boolean,
             default:false

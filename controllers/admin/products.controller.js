@@ -14,6 +14,7 @@ module.exports.index= async (req,res)=>{
     // Bộ Lọc
     const FilterStatus=FilterStatusHelpers(req.query);
     //console.log(FilterStatus);
+    //End Bộ lọc
 
     //xử lý trạng thái backend
     let find={
@@ -22,13 +23,17 @@ module.exports.index= async (req,res)=>{
     if(req.query.status){
         find.status=req.query.status;
     }
+    //End xử lý trạng thái backend
+
 
     // Tìm kiếm đầy đủ tên sản phẩm
     const searchProduct=searchProductHelpers(req.query);
-    console.log(searchProduct);
-    if(searchProduct.regex){
+    //console.log(searchProduct);
+    if(req.query.keyword){
         find.title=searchProduct.regex;
     }
+    //End tìm kiếm 
+
 
     //Phân Trang 
     const countProduct= await Product.countDocuments(find);
@@ -43,7 +48,6 @@ module.exports.index= async (req,res)=>{
 
 
     //Sort
-
     let sort={}
 
     if(req.query.sortKey && req.query.sortValue){

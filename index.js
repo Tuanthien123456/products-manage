@@ -7,6 +7,7 @@ const session=require("express-session");
 //moment
 const moment=require('moment');
 
+app.use(express.json());
 
 // flash
 const flash=require('express-flash');
@@ -36,6 +37,7 @@ app.use(bodyParser.urlencoded({ extended: false}));
 
 const routes =require("./routes/client/index.routes");
 const AdminRoutes =require("./routes/admin/index.router");
+const apiRouter=require("./routes/api/index.api.js");
 
 database.connect();
 
@@ -46,6 +48,7 @@ app.use(express.static(`${__dirname}/public`));
 //routes
 routes(app);
 AdminRoutes(app);
+apiRouter(app)
 
 
 
