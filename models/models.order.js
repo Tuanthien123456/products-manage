@@ -15,6 +15,21 @@ const orderSchema= new mongoose.Schema(
             discountPercentage:Number,
             quantity:Number
         }],
+        totalPrice: Number, 
+        paymentMethod: {        // phương thức thanh toán: "momo", "cod", "vnpay", ...
+            type: String,
+            default: "cod"
+        },
+        paymentStatus: {        // trạng thái thanh toán
+            type: String,
+            enum: ["pending", "paid", "failed"],
+            default: "pending"
+        },
+        paymentData: {          // lưu dữ liệu trả về từ MoMo hoặc gateway khác
+            transactionId: String,
+            payUrl: String,
+            response: Object
+        },
         deleted:{
             type:Boolean,
             default:false,

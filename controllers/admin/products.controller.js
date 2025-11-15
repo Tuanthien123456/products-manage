@@ -9,7 +9,7 @@ const PaginationHelpers=require("../../helpers/pagination");
 
 //[GET] /admin/products
 module.exports.index= async (req,res)=>{
-    //console.log(req.query.keyword);
+    //console.log(req.query.status);
 
     // Bộ Lọc
     const FilterStatus=FilterStatusHelpers(req.query);

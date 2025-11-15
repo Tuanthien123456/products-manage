@@ -1,13 +1,13 @@
-const express=require("express");
-const router=express.Router();
+// const express=require("express");
+// const router=express.Router();
 
-const controller=require("../../controllers/clients/cart.controller");
-
-
-router.get("/",controller.index);
-router.post("/add/:productId",controller.addPost);
-router.get("/delete/:productId",controller.delete);
-router.get("/update/:productId/:quantity",controller.update);
+// const controller=require("../../controllers/clients/cart.controller");
 
 
-module.exports=router;
+// router.get("/",controller.index);
+// router.post("/add/:productId",controller.addPost);
+// router.get("/delete/:productId",controller.delete);
+// router.get("/update/:productId/:quantity",controller.update);
+
+
+// module.exports=router;

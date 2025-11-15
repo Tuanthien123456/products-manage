@@ -23,13 +23,22 @@ module.exports.register = async(req,res)=>{
             email:req.body.email,
             password:req.body.password
         });
-        user.save();
+        await user.save();
         const token =user.tokenUser;
-        res.cookie("tokenUser",token);
+        //res.cookie("tokenUser",token);
+
+        //Thông tin người dùng 
+        const userInfo={
+            _id: user._id,
+            fullName: user.fullName,
+            email: user.email
+        }
+
         res.json({
             code:200,
             message:"Tạo Tài Khoản Thành Công!",
-            tokenUser:token
+            tokenUser:token,
+            userInfo:userInfo
         });
     }
 }
@@ -58,11 +67,17 @@ module.exports.login=async(req,res)=>{
         return;
     }
     const token=user.tokenUser;
-    res.cookie("tokenUser",token);
+    const userInfo={
+            _id: user._id,
+            fullName: user.fullName,
+            email: user.email
+        }
+    //res.cookie("tokenUser",token);
     res.json({
         code:200,
         message:"Đăng nhập thành công!",
-        token:token
+        token:token,
+        userInfo:userInfo
     });
 }
 
@@ -126,7 +141,7 @@ module.exports.otpPassword=async(req,res)=>{
         email:email
     });
     const token=user.tokenUser;
-    res.cookie("tokenUser",token);
+    //res.cookie("tokenUser",token);
     res.json({
         code:200,
         message:"Xác thực thành công!",

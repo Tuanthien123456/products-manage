@@ -46,7 +46,7 @@ app.set("view engine","pug");
 app.use(express.static(`${__dirname}/public`));
 
 //routes
-routes(app);
+//routes(app);
 AdminRoutes(app);
 apiRouter(app)
 

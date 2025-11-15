@@ -1,12 +1,12 @@
-const express=require("express");
-const router=express.Router();
+// const express=require("express");
+// const router=express.Router();
 
-const controller=require("../../controllers/clients/checkout.controller");
+// const controller=require("../../controllers/clients/checkout.controller");
 
-router.get("/",controller.index);
-router.post("/order",controller.order);
+// router.get("/",controller.index);
+// router.post("/order",controller.order);
 
-router.get("/success/:orderId",controller.success);
+// router.get("/success/:orderId",controller.success);
 
 
-module.exports=router;
+// module.exports=router;
