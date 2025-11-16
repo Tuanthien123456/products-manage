@@ -3,10 +3,11 @@ const User=require("../../models/models.user");
 const generateHelper=require("../../helpers/generate");
 const sendMailHelper=require("../../helpers/sendMail");
 const ForgotPassword=require("../../models/models.forgot-password");
+const Cart=require("../../models/models.carts");
 
 module.exports.register = async(req,res)=>{
     req.body.password=md5(req.body.password);
-
+    const expiresCookie = 365 * 24 * 60 * 60 * 1000;
     const existEmail=await User.findOne({
         email:req.body.email,
         deleted:false
@@ -25,7 +26,11 @@ module.exports.register = async(req,res)=>{
         });
         await user.save();
         const token =user.tokenUser;
-        //res.cookie("tokenUser",token);
+        res.cookie("tokenUser", token, {
+                    httpOnly: true,
+                    sameSite: "lax",
+                    maxAge: expiresCookie
+                });
 
         //Thông tin người dùng 
         const userInfo={
@@ -46,7 +51,7 @@ module.exports.register = async(req,res)=>{
 module.exports.login=async(req,res)=>{
     const email=req.body.email;
     const password= req.body.password;
-
+    const expiresCookie = 365 * 24 * 60 * 60 * 1000;
     const user= await User.findOne({
         email:email,
         deleted:false
@@ -73,11 +78,46 @@ module.exports.login=async(req,res)=>{
             email: user.email
         }
     //res.cookie("tokenUser",token);
+    res.cookie("tokenUser", token, {
+                    httpOnly: true,
+                    sameSite: "lax",
+                    maxAge: expiresCookie
+                });
+
+    const cart= await Cart.findOne({
+        user_id:user.id
+    })
+    if(cart){
+       res.cookie("cartId", cart.id, {
+                    httpOnly: true,
+                    sameSite: "lax",
+                    maxAge: expiresCookie
+                });
+    }else{
+        await Cart.updateOne({
+            _id:req.cookies.cartId
+        },{
+            user_id:user.id
+        });
+    }
     res.json({
         code:200,
         message:"Đăng nhập thành công!",
         token:token,
         userInfo:userInfo
+    });
+
+
+}
+
+
+module.exports.logout= async (req,res)=>{
+    res.clearCookie("cartId", { httpOnly: true, sameSite: "lax" });
+    res.clearCookie("tokenUser", { httpOnly: true, sameSite: "lax" });
+
+    res.json({
+        code: 200,
+        message: "Đăng xuất thành công!"
     });
 }
 

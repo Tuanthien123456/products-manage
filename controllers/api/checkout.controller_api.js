@@ -1,78 +1,80 @@
 const Cart = require("../../models/models.carts");
-const Orders = require("../../models/models.order");
 const Product = require("../../models/models.products");
-const productsHelper = require("../../helpers/products");
-const momoHelper = require("../../helpers/momo");
+const Order = require("../../models/models.order");
 
-module.exports.createOrder = async (req, res) => {
-  const token = req.headers["authorization"];
-  const cartId = req.headers["cartid"];
-  const { fullName, phone, address, paymentMethod } = req.body;
+module.exports.order = async (req, res) => {
+    try {
+        const cartId = req.cookies.cartId;
+        const userInfo = req.body.userInfo;
 
-  let cart;
-  if (token) cart = await Cart.findOne({ user_id: token });
-  else if (cartId) cart = await Cart.findById(cartId);
+        if (!cartId) {
+            return res.status(400).json({ message: "cartId không tồn tại trong cookie" });
+        }
 
-  if (!cart || cart.products.length === 0)
-    return res.json({ code: 400, message: "Giỏ hàng trống" });
+        const cart = await Cart.findById(cartId);
+        if (!cart || !cart.products || cart.products.length === 0) {
+            return res.status(400).json({ message: "Giỏ hàng rỗng hoặc không tồn tại" });
+        }
 
-  // Tính tổng tiền
-  let totalPrice = 0;
-  for (const item of cart.products) {
-    const productInfo = await Product.findById(item.product_id).select(
-      "title price discountPercentage"
-    );
-    productInfo.priceNew = productsHelper.priceNewProduct(productInfo);
-    item.price = productInfo.priceNew;
-    totalPrice += item.price * item.quantity;
-  }
+        // Build product list
+        const products = [];
+        for (const item of cart.products) {
 
-  // Tạo order
-  const order = new Orders({
-    user_id: token || null,
-    cart_id: cart._id,
-    userInfo: { fullName, phone, address },
-    products: cart.products.map((p) => ({
-      product_id: p.product_id,
-      price: p.price,
-      discountPercentage: p.discountPercentage,
-      quantity: p.quantity
-    })),
-    totalPrice,
-    paymentMethod: paymentMethod || "cod",
-    paymentStatus: paymentMethod === "momo" ? "pending" : "paid"
-  });
-  await order.save();
+            // Lấy product từ DB
+            const product = await Product.findById(item.product_id)
+                .select("price discountPercentage");
 
-  // Nếu thanh toán MoMo
-  if (paymentMethod === "momo") {
-    const momoResponse = await momoHelper.createPayment({
-      amount: totalPrice,
-      orderId: order._id.toString(),
-      orderInfo: `Thanh toán đơn hàng ${order._id}`,
-      returnUrl: "http://localhost:3000/payment-return",
-      notifyUrl: "http://your-server.com/api/payment/momo-notify"
-    });
+            if (!product) {
+                return res.status(400).json({
+                    message: "Sản phẩm không tồn tại",
+                    productId: item.product_id
+                });
+            }
 
-    order.paymentData = {
-      transactionId: momoResponse.transId,
-      payUrl: momoResponse.payUrl,
-      response: momoResponse
-    };
-    await order.save();
+            // Chống undefined
+            const price = Number(product.price) || 0;
+            const discount = Number(product.discountPercentage) || 0;
+            const quantity = Number(item.quantity) || 1;
 
-    return res.json({
-      code: 200,
-      message: "Order tạo thành công, chuyển đến MoMo để thanh toán",
-      order,
-      payUrl: momoResponse.payUrl
-    });
-  }
+            products.push({
+                product_id: item.product_id,
+                price,
+                discountPercentage: discount,
+                quantity
+            });
+        }
 
-  // Nếu COD
-  res.json({
-    code: 200,
-    message: "Order tạo thành công",
-    order
-  });
+        // Tính tổng tiền an toàn
+        const totalPrice = products.reduce((sum, item) => {
+            const priceNew = item.price - (item.price * item.discountPercentage / 100);
+            return sum + (priceNew * item.quantity);
+        }, 0);
+
+
+        // Tạo đơn hàng COD
+        const order = await Order.create({
+            cart_id: cartId,
+            userInfo,
+            products,
+            totalPrice,
+            paymentMethod: "cod",
+            paymentStatus: "pending"
+        });
+
+        // Clear giỏ hàng
+        await Cart.updateOne({ _id: cartId }, { products: [] });
+
+        return res.json({
+            message: "Đặt hàng COD thành công",
+            orderId: order._id,
+            paymentMethod: "cod"
+        });
+
+    } catch (err) {
+        console.log("ORDER ERROR:", err);
+        res.status(500).json({
+            message: "Lỗi server",
+            error: err.message
+        });
+    }
 };
