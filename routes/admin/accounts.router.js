@@ -24,4 +24,5 @@ router.patch("/edit/:id",upload.single("avatar"),
     validate.editPatch,
     controller.editPatch
 );
+router.delete("/delete/:id",controller.delete);
 module.exports=router;

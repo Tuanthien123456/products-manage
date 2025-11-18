@@ -34,16 +34,14 @@ block main
                                 th Hành Động 
                         tbody 
                             +table-tree(record)
+        form(
+            action=""
+            method="POST"
+            id="form-delete-item"
+            data-path=`${prefixAdmin}/products-category/delete`
+        )
+        script(src="/admin/js/products-category.js")
+            
 
-//- _id
-//- title 
-//- parent_id 
-//- description 
-//- thumbnail 
-//- status 
-//- position 
-//- deleted 
-//- deletedAt
-//- createdAt 
-//- updatedAt 
-//- slug 
+            
+

@@ -99,3 +99,12 @@ module.exports.editPatch= async (req,res)=>{
     }
     res.redirect("/admin/accounts");
 }
+
+module.exports.delete = async(req,res)=>{
+    const id=req.params.id;
+    await Accounts.updateOne({ _id:id},{
+        deleted:true,
+    });
+    req.flash("success",`Đã xóa thành công sản phẩm!`);
+    res.redirect("/admin/accounts");
+}

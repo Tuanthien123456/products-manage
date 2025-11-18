@@ -69,4 +69,12 @@ block main
                                                 button-delete
                                                 data-id=item.id
                                                 ) Xóa
+        form(
+            action=""
+            method="POST"
+            id="form-delete-item"
+            data-path=`${prefixAdmin}/accounts/delete`
+        )
+        script(src="/admin/js/products-category.js")
+        
 

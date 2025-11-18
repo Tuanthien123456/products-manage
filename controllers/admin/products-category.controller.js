@@ -80,3 +80,15 @@ module.exports.editPatch = async(req,res)=>{
     await ProductCategory.updateOne({_id:id},req.body);
      res.redirect("/admin/products-category");
 }
+
+module.exports.delete = async(req,res)=>{
+    const id=req.params.id;
+    await ProductCategory.updateOne({ _id:id},{
+        deleted:true,
+        deletedBy:{
+            account_id:res.locals.user.id,
+            deletedAt:new Date(),
+    }});
+    req.flash("success",`Đã xóa thành công sản phẩm!`);
+    res.redirect("/admin/products-category");
+}
